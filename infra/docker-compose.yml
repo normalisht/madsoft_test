@@ -1,0 +1,52 @@
+version: '3.9'
+
+name: "mad_soft_test"
+
+services:
+  public_api:
+    build: ../public_api
+    restart: always
+    env_file:
+      - ../public_api/.env
+    ports:
+      - "${PUBLIC_API_PORT}:8000"
+    depends_on:
+      - db
+      - private_api
+
+  private_api:
+    build: ../private_api
+    restart: always
+    env_file:
+      - ../private_api/.env
+    ports:
+      - "${PRIVATE_API_PORT}:8000"
+    depends_on:
+      - minio
+
+  db:
+    image: postgres:15.0-alpine
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    volumes:
+      - ../.db:/var/lib/postgresql/data/
+    healthcheck:
+      test: [ "CMD", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  minio:
+    image: quay.io/minio/minio
+    command: server /data --console-address ":${MINIO_CONSOLE_PORT}"
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "${MINIO_PORT}:9000"
+      - "${MINIO_CONSOLE_PORT}:${MINIO_CONSOLE_PORT}"
+    volumes:
+      - ../.minio_data:/data
