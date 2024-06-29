@@ -12,8 +12,3 @@ app.add_middleware(
 )
 
 app.include_router(main_router)
-
-
-@app.on_event('startup')
-async def startup():
-    pass

@@ -1,7 +1,9 @@
 import asyncio
 import datetime as dt
+import os
 from uuid import uuid4
 
+from dotenv import load_dotenv
 from fastapi.encoders import jsonable_encoder
 from httpx import ASGITransport, AsyncClient
 import pytest
@@ -14,6 +16,10 @@ from public_api.crud import meme_repository
 from public_api.main import app
 from public_api.schemas.memes import MemeCreate, MemeRead
 
+load_dotenv()
+
+PRIVATE_API_URL = os.getenv('PRIVATE_API_URL')
+
 SQLALCHEMY_DATABASE_URL = 'sqlite+aiosqlite:///test.db'
 
 engine = create_async_engine(
@@ -21,12 +27,7 @@ engine = create_async_engine(
     connect_args={'check_same_thread': False},
     poolclass=StaticPool,
 )
-TestingSessionLocal = sessionmaker(
-    engine,
-    class_=AsyncSession,
-    autocommit=False,
-    autoflush=False,
-)
+TestingSessionLocal = sessionmaker(engine, class_=AsyncSession)
 
 
 async def init_models():
@@ -35,20 +36,12 @@ async def init_models():
         await conn.run_sync(Base.metadata.create_all)
 
 
-loop = asyncio.new_event_loop()
-asyncio.set_event_loop(loop)
-try:
-    loop.run_until_complete(init_models())
-finally:
-    loop.close()
-    asyncio.set_event_loop(None)
-
-
 async def override_get_async_session() -> AsyncSession:
     async with TestingSessionLocal() as session:
         yield session
 
 
+asyncio.run(init_models())
 app.dependency_overrides[get_async_session] = override_get_async_session
 
 
@@ -71,7 +64,7 @@ async def create_test_meme(session: AsyncSession) -> MemeRead:
     filename = uuid4().hex
     meme_data = MemeCreate(
         description='Test Meme',
-        image_url=f'http://test/{filename}',
+        image_url=f'{PRIVATE_API_URL}/{filename}',
         filename=filename,
         expires_at=dt.datetime.now() + dt.timedelta(days=1),
     )

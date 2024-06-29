@@ -11,3 +11,7 @@ s3_client = Minio(
 
 if not s3_client.bucket_exists(settings.memes_bucket_name):
     s3_client.make_bucket(settings.memes_bucket_name)
+
+
+def get_s3_client() -> Minio:
+    return s3_client
