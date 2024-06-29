@@ -1,4 +1,4 @@
-# madsoft_test
+# Тестовое задание
 
 * [Задание](https://docs.google.com/forms/d/e/1FAIpQLSeFG6LOI0i165oLR4mwHglMt_NaVcqak-Zz51hK8mnZ4SRJTQ/viewform)
 
@@ -38,7 +38,30 @@ docker compose up --build -d
 docker compose -f dev-docker-compose.yml up --build -d
 ```
 
+## Как запустить тесты
+
+Перейти в нужный сервис
+
+```bash
+cd public_api|private_api
+```
+
+Развернуть виртуальное окружение (Пример для Linux)
+```bash
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+Запустить тесты
+```bash
+pytest tests/tests.py
+```
+
+
 ## Функционал
+
+### PublicAPI
 
 * Получить список всех мемов
 ```http request
@@ -86,7 +109,7 @@ form-data
   "description": "desc"
 }
 ```
-
+response
 ```json
 {
   "filename": "filename.jpg",
@@ -106,3 +129,52 @@ PUT /memes/{id}
 ```http request
 DELETE /memes/{id}
 ```
+
+
+### PrivateAPI
+
+
+* Загрузить файл
+```http request
+POST /upload
+```
+form-data
+```json
+{
+  "file": "(binary)"
+}
+```
+response
+```json
+{
+  "filename": "some_filename.jpg"
+}
+```
+
+
+* Получить ссылку на файл
+```http request
+GET /files/{filename}
+```
+```json
+{
+  "url": "file_url",
+  "life_time": "in_minutes",
+  "filename": "filename.jpg"
+}
+```
+
+* Удалить файл
+```http request
+DELETE /files/{filename}
+```
+```json
+{
+  "result": true
+}
+```
+
+#
+
+P.S. Хотел использовать асинхронную библиотеку для minio (miniopy-async),
+но не смог подружить с тестами т.к. pytest-minio-mock синхронная
