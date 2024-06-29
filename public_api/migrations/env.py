@@ -21,7 +21,6 @@ database_url = (
     f'@{os.environ["DB_HOST"]}:{os.environ["DB_PORT"]}'
     f'/{os.environ["DB_NAME"]}'
 )
-print(database_url)
 config.set_main_option('sqlalchemy.url', database_url)
 
 # Interpret the config file for Python logging.

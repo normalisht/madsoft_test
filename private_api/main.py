@@ -8,7 +8,7 @@ app = FastAPI(title=settings.app_title, description=settings.description)
 
 app.add_middleware(
     TrustedHostMiddleware,
-    allowed_hosts=['localhost', '127.0.0.1', 'public_api'],
+    allowed_hosts=['localhost', '127.0.0.1', 'public_api', 'private_api'],
 )
 
 app.include_router(main_router)
