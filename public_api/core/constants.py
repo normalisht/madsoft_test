@@ -1,0 +1,1 @@
+FILE_MAX_SIZE: int = 1024 * 1024 * 30  # 30MB

@@ -1,15 +1,15 @@
 from http import HTTPStatus
 from uuid import uuid4
 
-from fastapi import APIRouter, UploadFile, File, HTTPException
+from fastapi import APIRouter, File, HTTPException, UploadFile
 from minio import S3Error
 
-from core.config import settings
-from core.s3_client import (
-    s3_client,
+from private_api.core.config import settings
+from private_api.core.constants import (
     URL_LIFE_TIME,
     URL_LIFE_TIME_WITHOUT_ONE_MINUTE,
 )
+from private_api.core.s3_client import s3_client
 
 router = APIRouter()
 

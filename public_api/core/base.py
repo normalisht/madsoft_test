@@ -1,4 +1,4 @@
 """Импорты класса Base и всех моделей для Alembic."""
 
-from core.db import Base  # noqa
-from models import Meme  # noqa
+from public_api.core.db import Base  # noqa
+from public_api.models import Meme  # noqa

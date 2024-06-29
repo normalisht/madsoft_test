@@ -1,9 +1,9 @@
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from crud.base import CRUDBase
-from models import Meme
-from schemas.memes import MemeCreate, MemeUpdate
+from public_api.crud.base import CRUDBase
+from public_api.models import Meme
+from public_api.schemas.memes import MemeCreate, MemeUpdate
 
 
 class MemeRepository(CRUDBase[Meme, MemeCreate, MemeUpdate]):

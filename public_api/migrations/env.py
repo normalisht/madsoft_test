@@ -1,6 +1,6 @@
 import asyncio
-import os
 from logging.config import fileConfig
+import os
 
 from alembic import context
 from dotenv import load_dotenv
@@ -8,7 +8,7 @@ from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
-from core.base import Base
+from public_api.core.base import Base
 
 load_dotenv('.env')
 # this is the Alembic Config object, which provides
@@ -21,6 +21,7 @@ database_url = (
     f'@{os.environ["DB_HOST"]}:{os.environ["DB_PORT"]}'
     f'/{os.environ["DB_NAME"]}'
 )
+print(database_url)
 config.set_main_option('sqlalchemy.url', database_url)
 
 # Interpret the config file for Python logging.

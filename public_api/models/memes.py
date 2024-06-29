@@ -1,8 +1,9 @@
 import datetime as dt
-from sqlalchemy import String, DateTime, func
-from sqlalchemy.orm import Mapped
-from sqlalchemy.orm import mapped_column
-from core.db import Base
+
+from sqlalchemy import DateTime, String, func
+from sqlalchemy.orm import Mapped, mapped_column
+
+from public_api.core.db import Base
 
 
 class Meme(Base):

@@ -1,11 +1,6 @@
 from minio import Minio
-from datetime import timedelta
-from core.config import settings
 
-
-URL_LIFE_TIME: timedelta = timedelta(hours=1)
-URL_LIFE_TIME_WITHOUT_ONE_MINUTE: int = 59
-
+from private_api.core.config import settings
 
 s3_client = Minio(
     settings.s3_endpoint_url,

@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 
-from api.routers import main_router
-from core.config import settings
+from private_api.api.routers import main_router
+from private_api.core.config import settings
 
 app = FastAPI(title=settings.app_title, description=settings.description)
 

@@ -1,10 +1,16 @@
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from sqlalchemy.orm import declarative_base, declared_attr, sessionmaker
-from sqlalchemy.dialects.postgresql import UUID
-from core.config import settings
-from sqlalchemy.orm import Mapped
-from sqlalchemy.orm import mapped_column
 from uuid import uuid4
+
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+from sqlalchemy.orm import (
+    Mapped,
+    declarative_base,
+    declared_attr,
+    mapped_column,
+    sessionmaker,
+)
+
+from public_api.core.config import settings
 
 
 class PreBase:

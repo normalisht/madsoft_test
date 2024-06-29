@@ -3,9 +3,11 @@ FROM python:3.11-slim
 WORKDIR /app
 
 COPY ./requirements.txt .
-RUN pip install -r requirements.txt
+COPY . private_api/
+COPY main.py .
 
-COPY . .
+RUN python3 -m pip install --upgrade pip
+RUN pip install -r requirements.txt
 
 EXPOSE 8000
 

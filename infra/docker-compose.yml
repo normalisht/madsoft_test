@@ -11,7 +11,7 @@ services:
     ports:
       - "${PUBLIC_API_PORT}:8000"
     depends_on:
-      - db
+      - migrations
       - private_api
 
   private_api:
@@ -22,7 +22,18 @@ services:
     ports:
       - "${PRIVATE_API_PORT}:8000"
     depends_on:
-      - minio
+      minio:
+        condition: service_healthy
+
+  migrations:
+    build:
+      context: ../public_api
+      dockerfile: ../public_api/migrations/Dockerfile
+    env_file:
+      - ../public_api/.env
+    depends_on:
+      db:
+        condition: service_healthy
 
   db:
     image: postgres:15.0-alpine
@@ -30,9 +41,9 @@ services:
     env_file:
       - .env
     ports:
-      - "${POSTGRES_PORT}:5432"
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
     volumes:
-      - ../.db:/var/lib/postgresql/data/
+      - ./.db:/var/lib/postgresql/data/
     healthcheck:
       test: [ "CMD", "pg_isready" ]
       interval: 10s
@@ -40,13 +51,20 @@ services:
       retries: 5
 
   minio:
-    image: quay.io/minio/minio
+    image: minio/minio
     command: server /data --console-address ":${MINIO_CONSOLE_PORT}"
-    restart: always
     env_file:
       - .env
+    environment:
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
     ports:
       - "${MINIO_PORT}:9000"
       - "${MINIO_CONSOLE_PORT}:${MINIO_CONSOLE_PORT}"
     volumes:
-      - ../.minio_data:/data
+      - ./.minio_data:/data
+    healthcheck:
+      test: [ 'CMD', 'curl', '-f', 'http://127.0.0.1:9000/minio/health/live' ]
+      interval: 10s
+      timeout: 3s
+      retries: 5

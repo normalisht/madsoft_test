@@ -1,12 +1,11 @@
 from typing import Generic, Optional, Type, TypeVar
 
 from fastapi.encoders import jsonable_encoder
-from pydantic import BaseModel, UUID4
-from sqlalchemy import func
-from sqlalchemy import select
+from pydantic import UUID4, BaseModel
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.db import Base
+from public_api.core.db import Base
 
 ModelType = TypeVar('ModelType', bound=Base)
 CreateSchemaType = TypeVar('CreateSchemaType', bound=BaseModel)
@@ -37,7 +36,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         obj_in,
         session: AsyncSession,
     ) -> ModelType:
-        obj_in_data = obj_in.dict()
+        obj_in_data = obj_in.model_dump()
         db_obj = self.model(**obj_in_data)
 
         session.add(db_obj)
@@ -53,7 +52,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         session: AsyncSession,
     ) -> ModelType:
         obj_data = jsonable_encoder(db_obj)
-        update_data = obj_in.dict(exclude_unset=True)
+        update_data = obj_in.model_dump(exclude_unset=True)
 
         for field in obj_data:
             if field in update_data:

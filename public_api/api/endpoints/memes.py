@@ -3,21 +3,26 @@ import datetime as dt
 from fastapi import (
     APIRouter,
     Depends,
-    Form,
-    UploadFile,
-    Query,
     File,
+    Form,
     HTTPException,
+    Query,
+    UploadFile,
 )
 from pydantic.types import UUID4
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.db import get_async_session
-from core.pagination import paginate, PagedResponseSchema
-from crud import meme_repository
-from models import Meme
-from schemas.memes import MemeRead, MemeCreate, MemeUpdate
-from services.private_api import upload_file, get_file_url, remove_file
+from public_api.core.constants import FILE_MAX_SIZE
+from public_api.core.db import get_async_session
+from public_api.core.pagination import PagedResponseSchema, paginate
+from public_api.crud import meme_repository
+from public_api.models import Meme
+from public_api.schemas.memes import MemeCreate, MemeRead, MemeUpdate
+from public_api.services.private_api import (
+    get_file_url,
+    remove_file,
+    upload_file,
+)
 
 router = APIRouter()
 
@@ -53,6 +58,7 @@ async def create_meme(
     description: str = Form(None),
     session: AsyncSession = Depends(get_async_session),
 ):
+    await validate_file(image)
     upload_file_response = await upload_file(image)
     response = await get_file_url(upload_file_response.filename)
     expires_at = await get_expires_at(response.life_time)
@@ -74,6 +80,7 @@ async def update_meme(
     image: UploadFile = File(None),
     session: AsyncSession = Depends(get_async_session),
 ):
+    await validate_file(image)
     meme = await get_meme_or_404(meme_id, session)
     update_data = MemeUpdate()
 
@@ -123,3 +130,17 @@ async def get_meme_or_404(meme_id: UUID4, session: AsyncSession):
     if not meme:
         raise HTTPException(status_code=404, detail='Meme not found')
     return meme
+
+
+async def validate_file(file: UploadFile):
+    if file.size > FILE_MAX_SIZE:
+        raise HTTPException(status_code=400, detail='File is too large')
+
+    content_type = file.content_type
+    if content_type not in [
+        'image/jpeg',
+        'image/png',
+        'image/gif',
+        'image/webp',
+    ]:
+        raise HTTPException(status_code=400, detail='Invalid file type')

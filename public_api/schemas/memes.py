@@ -1,7 +1,7 @@
 import datetime as dt
 from typing import Optional
 
-from pydantic import Field, BaseModel
+from pydantic import BaseModel, Field
 from pydantic.types import UUID4
 
 

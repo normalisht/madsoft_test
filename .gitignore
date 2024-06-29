@@ -164,3 +164,5 @@ cython_debug/
 .db_dev/
 .minio_data/
 .minio_data_dev/
+infra/config/access_key.txt
+infra/config/secret_key.txt

@@ -1,9 +1,9 @@
+from fastapi import File, HTTPException
 import httpx
-from fastapi import HTTPException, File
 from pydantic import ValidationError
-from schemas.private_api import UploadFileResponse, FileURLResponse
 
-from core.config import settings
+from public_api.core.config import settings
+from public_api.schemas.private_api import FileURLResponse, UploadFileResponse
 
 
 async def upload_file(file: File) -> UploadFileResponse:
