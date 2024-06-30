@@ -25,9 +25,8 @@ services:
     restart: always
     env_file:
       - ../private_api/.env
-#    Включить для тестирования и доступа к документации
-#    ports:
-#      - "${PRIVATE_API_PORT}:8000"
+    ports:
+      - "${PRIVATE_API_PORT}:8000"
     depends_on:
       minio:
         condition: service_healthy
