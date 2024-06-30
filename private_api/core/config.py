@@ -7,11 +7,12 @@ class Settings(BaseSettings):
     app_title: str = 'MadSoftTest'
     description: str = 'Test Project'
     secret: str = 'SECRET'
-    memes_bucket_name: str = 'memes'
-    s3_endpoint_url: str = 'minio.example.com'
+    s3_proxy_url: str = 'http://minio:9000'
+    s3_endpoint: str = 'localhost:9000'
     s3_access_key: str = 'access_key'
     s3_secret_key: str = 'secret_key'
     s3_secure: bool = False
+    memes_bucket_name: str = 'memes'
 
 
 settings = Settings()
