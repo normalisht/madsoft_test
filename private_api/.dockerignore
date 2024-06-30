@@ -1,3 +1,4 @@
 .env.example
 Dockerfile
-venv
+venv/
+tests/

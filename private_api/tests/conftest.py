@@ -11,7 +11,7 @@ from private_api.main import app
 load_dotenv()
 
 s3_client = MockMinioClient(
-    endpoint=os.getenv('S3_ENDPOINT_URL'),
+    endpoint=os.getenv('S3_ENDPOINT'),
     access_key=os.getenv('S3_ACCESS_KEY'),
     secret_key=os.getenv('S3_SECRET_KEY'),
     secure=os.getenv('S3_SECURE') == 'True',

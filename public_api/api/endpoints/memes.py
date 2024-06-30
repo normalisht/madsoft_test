@@ -80,7 +80,6 @@ async def update_meme(
     image: UploadFile = File(None),
     session: AsyncSession = Depends(get_async_session),
 ):
-    await validate_file(image)
     meme = await get_meme_or_404(meme_id, session)
     update_data = MemeUpdate()
 
@@ -88,6 +87,7 @@ async def update_meme(
         update_data = MemeUpdate(description=description)
 
     if image:
+        await validate_file(image)
         await remove_file(meme.filename)
         response = await upload_file(image)
         response = await get_file_url(response.filename)
